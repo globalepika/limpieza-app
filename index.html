@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Productos de Limpieza</title>
+    <!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registrado con éxito:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Error al registrar Service Worker:', error);
+        });
+    });
+  }
+</script>
+    <style>
+    
+    
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            max-width: 400px; 
+            margin: auto; 
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            text-align: center; 
+            color: #333;
+            margin: 5px 0;
+        }
+        .producto-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .producto-item label {
+            flex: 1;
+            margin: 0;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .cantidad-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-cantidad {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .btn-cantidad:hover {
+            background-color: #128C7E;
+        }
+        .input-cantidad {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            outline: none;
+            background: #fff;
+        }
+        .input-cantidad:focus {
+            border-color: #25D366;
+            box-shadow: 0 0 5px rgba(37, 211, 102, 0.5);
+        }
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background-color: #25D366; 
+            color: white; 
+            border: none; 
+            font-size: 18px; 
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer; 
+            margin-top: 20px;
+        }
+        button:hover { 
+            background-color: #128C7E; 
+        }
+        #nombreEmpleado {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+            outline: none;
+        }
+        #nombreEmpleado:focus {
+            border-color: #25D366;
+            box-shadow: 0 0 5px rgba(37, 211, 102, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://productos.sitioweb.net.ar/newairs.webp" alt="Logo de tu empresa">
+        <h1>Selecciona los productos y sus cantidades</h1>
+    </div>
+
+    <form id="formProductos">
+        <!-- Productos dinámicos -->
+        <div class="producto-item">
+            <label>LAVANDINA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="LAVANDINA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>DESENGRASANTE</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="DESENGRASANTE" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>DETERGENTE</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="DETERGENTE" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>VINAGRE BLANCO</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="VINAGRE BLANCO" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>ALCOHOL</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="ALCOHOL" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>DESODORANTE DE MABIENTES</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="DESODORANTE DE MABIENTES" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>TRAPOS DE PISO</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="TRAPOS DE PISO" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>FRANELAS</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="FRANELAS" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>REJILLA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="REJILLA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>ESCOBAS</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="ESCOBAS" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>SECADORES</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="SECADORES" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>PALOS (MADERA)</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="PALOS (MADERA)" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>PALAS CON MANGO</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="PALAS CON MANGO" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>BALDE</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="BALDE" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>LIMPIA MUEBLES</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="LIMPIA MUEBLES" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>ACEITE PARA ASCENSOR</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="ACEITE PARA ASCENSOR" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>CERA NEGRA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="CERA NEGRA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>CERA INCOLORA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="CERA INCOLORA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>HECHO 3 EN 1</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="HECHO 3 EN 1" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>PLUMERO</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="PLUMERO" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>LIMPIA VIDRIOS</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="LIMPIA VIDRIOS" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>SERVILLETAS</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="SERVILLETAS" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>PAPEL HIGÉNICO</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="PAPEL HIGÉNICO" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>CIF EN CREMA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="CIF EN CREMA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>GUANTES N° 9</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="GUANTES N° 9" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>GUANTES N° 8</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="GUANTES N° 8" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>GUANTES N° 7</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="GUANTES N° 7" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>GUANTES N° 6</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="GUANTES N° 6" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>GUANTES N° 5</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="GUANTES N° 5" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>LISOFORM</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="LISOFORM" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>SECADOR DE PISO DE GOMA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="SECADOR DE PISO DE GOMA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>BOLSAS DE CONSORCIO</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="BOLSAS DE CONSORCIO" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>BOLSAS VERDES</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="BOLSAS VERDES" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>CLORO PILETAS</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="CLORO PILETAS" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>VIRULANA FINA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="VIRULANA FINA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>ESPATULA (9 Cm)</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="ESPATULA (9 Cm)" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>ESPONJA AMARILLA</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="ESPONJA AMARILLA" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="producto-item">
+            <label>OTROS</label>
+            <div class="cantidad-control">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
+                <input type="text" class="input-cantidad" value="0" data-nombre="OTROS" readonly>
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Campo para nombre del empleado o consorcio -->
+    <label>Consorcio: (ej: Rivadavia 6124)</label>
+    <input type="text" id="nombreEmpleado" placeholder="Nombre del consorcio o empleado" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; margin: 10px 0;">
+
+    <button onclick="enviarPorWhatsApp()">Enviar por WhatsApp</button>
+
+    <script>
+        // Función para ajustar la cantidad (sumar o restar)
+        function ajustarCantidad(btn, delta) {
+            const input = btn.parentNode.querySelector('.input-cantidad');
+            let valor = parseInt(input.value) || 0;
+            valor += delta;
+            if (valor < 0) valor = 0;
+            if (valor > 100) valor = 100; // límite máximo
+            input.value = valor;
+        }
+
+        // Función para enviar por WhatsApp
+        function enviarPorWhatsApp() {
+            const inputs = document.querySelectorAll('.input-cantidad');
+            const nombre = document.getElementById('nombreEmpleado').value.trim();
+
+            if (!nombre) {
+                alert("⚠️ Por favor, ingresa el nombre del consorcio o empleado.");
+                return;
+            }
+
+            let productosSeleccionados = [];
+            inputs.forEach(input => {
+                const cantidad = parseInt(input.value) || 0;
+                if (cantidad > 0) {
+                    productosSeleccionados.push({
+                        nombre: input.dataset.nombre,
+                        cantidad: cantidad
+                    });
+                }
+            });
+
+            if (productosSeleccionados.length === 0) {
+                alert("⚠️ Por favor, selecciona al menos un producto con cantidad mayor a 0.");
+                return;
+            }
+
+            // Construir mensaje
+            let mensaje = "📋 *Lista de productos necesarios:*\n\n";
+            productosSeleccionados.forEach((prod, index) => {
+                mensaje += `${index + 1}. *${prod.nombre}* - Cantidad: ${prod.cantidad}\n`;
+            });
+            mensaje += `\n\n*Enviado por:* ${nombre}`;
+
+            // Número de WhatsApp (con código de país, sin +)
+            const numeroWhatsApp = '5491156926088'; // Asegúrate de que tenga el código de país (54) y el 9 de móvil
+
+            // Codificar mensaje para URL
+            const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+
+            // Abrir en nueva pestaña (funciona en móviles y desktop)
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
+
+
