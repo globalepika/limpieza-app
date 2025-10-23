@@ -1,23 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
-    <!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
-
-<!-- Service Worker -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registrado con éxito:', registration.scope);
-        })
-        .catch(error => {
-          console.log('Error al registrar Service Worker:', error);
-        });
-    });
-  }
-</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -156,7 +138,7 @@
     <form id="formProductos">
         <!-- Productos dinámicos -->
         <div class="producto-item">
-            <label>LAVANDINA</label>
+            <label>LAVANDINA (5 lts)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="LAVANDINA" readonly>
@@ -165,7 +147,7 @@
         </div>
 
         <div class="producto-item">
-            <label>DESENGRASANTE</label>
+            <label>DESENGRASANTE (5 lts)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="DESENGRASANTE" readonly>
@@ -174,7 +156,7 @@
         </div>
 
         <div class="producto-item">
-            <label>DETERGENTE</label>
+            <label>DETERGENTE (5 lts)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="DETERGENTE" readonly>
@@ -183,7 +165,7 @@
         </div>
 
         <div class="producto-item">
-            <label>VINAGRE BLANCO</label>
+            <label>VINAGRE BLANCO (1 lts)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="VINAGRE BLANCO" readonly>
@@ -192,7 +174,7 @@
         </div>
 
         <div class="producto-item">
-            <label>ALCOHOL</label>
+            <label>ALCOHOL (1 lts)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="ALCOHOL" readonly>
@@ -210,7 +192,7 @@
         </div>
 
         <div class="producto-item">
-            <label>TRAPOS DE PISO</label>
+            <label>TRAPO DE PISOS</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="TRAPOS DE PISO" readonly>
@@ -354,7 +336,7 @@
         </div>
 
         <div class="producto-item">
-            <label>PAPEL HIGÉNICO</label>
+            <label>PAPEL HIGÉNICO ( X UNIDAD)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="PAPEL HIGÉNICO" readonly>
@@ -435,7 +417,7 @@
         </div>
 
         <div class="producto-item">
-            <label>BOLSAS DE CONSORCIO</label>
+            <label>BOLSAS DE CONSORCIO (X 50)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="BOLSAS DE CONSORCIO" readonly>
@@ -444,7 +426,7 @@
         </div>
 
         <div class="producto-item">
-            <label>BOLSAS VERDES</label>
+            <label>BOLSAS VERDES (X 50)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="BOLSAS VERDES" readonly>
@@ -462,7 +444,7 @@
         </div>
 
         <div class="producto-item">
-            <label>VIRULANA FINA</label>
+            <label>VIRULANA FINA (PACK)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
                 <input type="text" class="input-cantidad" value="0" data-nombre="VIRULANA FINA" readonly>
@@ -487,20 +469,19 @@
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
             </div>
         </div>
-
         <div class="producto-item">
-            <label>OTROS</label>
+            <label>ESPONJA DE VIRUTA (ACERO)</label>
             <div class="cantidad-control">
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, -1)">–</button>
-                <input type="text" class="input-cantidad" value="0" data-nombre="OTROS" readonly>
+                <input type="text" class="input-cantidad" value="0" data-nombre="ESPONJA AMARILLA" readonly>
                 <button type="button" class="btn-cantidad" onclick="ajustarCantidad(this, 1)">+</button>
             </div>
         </div>
     </form>
 
     <!-- Campo para nombre del empleado o consorcio -->
-    <label>Consorcio: (ej: Rivadavia 6124)</label>
-    <input type="text" id="nombreEmpleado" placeholder="Nombre del consorcio o empleado" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; margin: 10px 0;">
+    <label><b>Consorcio: (ej: Rivadavia 6124)</b></label>
+    <input type="text" id="nombreEmpleado" placeholder="Dirección del consorcio" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; margin: 10px 0;">
 
     <button onclick="enviarPorWhatsApp()">Enviar por WhatsApp</button>
 
@@ -560,6 +541,3 @@
     </script>
 </body>
 </html>
-
-
-
